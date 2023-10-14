@@ -1,4 +1,4 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*read_line(int fd, char *buffer, char *remainder)
 {
@@ -53,23 +53,23 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	char		*buffer;
-	static char	*remainder;
+	static char	*remainder[100000];
 
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if(fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) || !buffer)
 	{
-		free(remainder);
+		free(remainder[fd]);
 		free(buffer);
-		remainder = NULL;
+		remainder[fd] = NULL;
 		buffer = NULL;
 		return (NULL);
 	}
-	line = read_line(fd, buffer, remainder);
+	line = read_line(fd, buffer, remainder[fd]);
 	free(buffer);
 	buffer = NULL;
 	if(!line)
 		return (NULL);
-	remainder = update_remainder(line);
+	remainder[fd] = update_remainder(line);
 	return (line);
 }
 
